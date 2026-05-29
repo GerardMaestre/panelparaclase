@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" class="dark">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,12 +29,14 @@
       }
     }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <style>
     body {
       font-family: 'Inter', sans-serif;
       background-color: #0a0a0f;
     }
+
     /* Estilos de neón para inputs de rango de control */
     input[type="range"] {
       -webkit-appearance: none;
@@ -42,6 +45,7 @@
       height: 6px;
       border-radius: 9999px;
     }
+
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
@@ -54,59 +58,75 @@
       box-shadow: 0 0 10px rgba(168, 85, 247, 0.8);
       transition: all 0.15s ease-in-out;
     }
+
     input[type="range"]::-webkit-slider-thumb:hover {
       transform: scale(1.2);
       box-shadow: 0 0 15px rgba(168, 85, 247, 1);
     }
+
     /* Animación de pulso de emergencia para cuando hay crisis activa */
     @keyframes pulse-border {
-      0%, 100% { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 5px rgba(239, 68, 68, 0.2); }
-      50% { border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 20px rgba(239, 68, 68, 0.6); }
+
+      0%,
+      100% {
+        border-color: rgba(239, 68, 68, 0.4);
+        box-shadow: 0 0 5px rgba(239, 68, 68, 0.2);
+      }
+
+      50% {
+        border-color: rgba(239, 68, 68, 1);
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+      }
     }
+
     .crisis-active-border {
       animation: pulse-border 2s infinite;
     }
   </style>
 </head>
+
 <body class="text-gray-100 min-h-screen pb-12 antialiased">
 
   <!-- TOP DECORATIVE NEON BAR -->
   <div class="h-1.5 w-full bg-gradient-to-r from-neonCyan via-neonPurple to-neonOrange"></div>
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-    
+
     <!-- HEADER -->
     <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-cyberborder">
       <div class="flex items-center gap-4">
         <div class="p-3 bg-gradient-to-br from-neonPurple to-neonCyan rounded-xl shadow-lg shadow-purple-500/20">
           <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm12-3c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 19V6l12-3v13M9 19c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm12-3c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z" />
           </svg>
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <h1 class="text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-100 to-gray-300">
-              URBANFEST SUSTAINABILITY SIMULATOR
+            <h1
+              class="text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-100 to-gray-300">
+              PANEL DE FESTIVAL
             </h1>
-            <span class="px-2 py-0.5 text-[10px] uppercase font-bold tracking-widest bg-neonPurple/20 text-purple-300 rounded border border-purple-500/30">V4.0 Alta Fidelidad</span>
           </div>
           <p class="text-xs text-gray-400 mt-1">
-            Plataforma de modelado estratégico para festivales de música urbana a escala nacional • <span class="text-neonPurple font-semibold">Noa, Gerard y Daniel</span>
+            <span class="text-neonPurple font-semibold">Noa, Gerard y Daniel</span>
           </p>
         </div>
       </div>
-      
+
       <!-- CONFIGURACIÓN GLOBAL DE ASISTENCIA -->
       <div class="bg-cybercard border border-cyberborder rounded-xl p-3 flex items-center gap-4">
         <div>
-          <span class="block text-[10px] uppercase font-bold text-gray-400 tracking-wider">Aforo de público (Simulado)</span>
+          <span class="block text-[10px] uppercase font-bold text-gray-400 tracking-wider">Aforo de público
+            (Simulado)</span>
           <div class="flex items-center gap-2 mt-1">
             <span class="text-lg font-black text-neonCyan" id="val-attendance-display">30.000</span>
             <span class="text-xs text-gray-500">Asistentes</span>
           </div>
         </div>
         <div class="w-32">
-          <input type="range" id="sl-attendance" min="20000" max="40000" step="1000" value="30000" class="w-full" oninput="updateAll()">
+          <input type="range" id="sl-attendance" min="20000" max="40000" step="1000" value="30000" class="w-full"
+            oninput="updateAll()">
         </div>
       </div>
     </header>
@@ -117,49 +137,65 @@
         <span class="w-1.5 h-1.5 rounded-full bg-neonPurple"></span> Hipótesis Operativas y Escenarios Base (PDF)
       </h2>
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-        <button class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all active-scenario-btn font-sans" id="btn-sc-base" onclick="loadScenario('base', this)">
+        <button
+          class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all active-scenario-btn font-sans"
+          id="btn-sc-base" onclick="loadScenario('base', this)">
           <div class="text-[10px] font-bold text-gray-400">Escenario Base</div>
           <div class="text-xs font-semibold mt-0.5 text-white">100% Tradicional</div>
         </button>
-        <button class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all font-sans" id="btn-sc-h1" onclick="loadScenario('h1', this)">
+        <button
+          class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all font-sans"
+          id="btn-sc-h1" onclick="loadScenario('h1', this)">
           <div class="text-[10px] font-bold text-neonGreen">Hipótesis 1 (H1)</div>
           <div class="text-xs font-semibold mt-0.5 text-white">Menaje Circular</div>
         </button>
-        <button class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all" id="btn-sc-h2" onclick="loadScenario('h2', this)">
+        <button
+          class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all"
+          id="btn-sc-h2" onclick="loadScenario('h2', this)">
           <div class="text-[10px] font-bold text-neonPurple">Hipótesis 2 (H2)</div>
           <div class="text-xs font-semibold mt-0.5 text-white">Descarbonización</div>
         </button>
-        <button class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all font-sans" id="btn-sc-h3" onclick="loadScenario('h3', this)">
+        <button
+          class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all font-sans"
+          id="btn-sc-h3" onclick="loadScenario('h3', this)">
           <div class="text-[10px] font-bold text-neonCyan">Hipótesis 3 (H3)</div>
           <div class="text-xs font-semibold mt-0.5 text-white">Buses Lanzadera</div>
         </button>
-        <button class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all font-sans" id="btn-sc-h4" onclick="loadScenario('h4', this)">
+        <button
+          class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all font-sans"
+          id="btn-sc-h4" onclick="loadScenario('h4', this)">
           <div class="text-[10px] font-bold text-neonOrange">Hipótesis 4 (H4)</div>
           <div class="text-xs font-semibold mt-0.5 text-white">Empleo Local +15%</div>
         </button>
-        <button class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all font-sans" id="btn-sc-h5" onclick="loadScenario('h5', this)">
+        <button
+          class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all font-sans"
+          id="btn-sc-h5" onclick="loadScenario('h5', this)">
           <div class="text-[10px] font-bold text-neonRed">Hipótesis 5 (H5)</div>
           <div class="text-xs font-semibold mt-0.5 text-white">Zona Periurbana</div>
         </button>
       </div>
 
       <!-- DESCRIPCIÓN DEL ESCENARIO ACTIVO -->
-      <div id="impactNotice" class="mt-3 p-4 bg-cybercard border-l-4 border-neonPurple rounded-r-xl text-xs text-gray-300 leading-relaxed shadow-lg"></div>
+      <div id="impactNotice"
+        class="mt-3 p-4 bg-cybercard border-l-4 border-neonPurple rounded-r-xl text-xs text-gray-300 leading-relaxed shadow-lg">
+      </div>
     </section>
 
     <!-- CONTENIDO CENTRAL: PALANCAS Y DATOS -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
-      
+
       <!-- 2. PALANCAS DE DECISIÓN (COL 4) -->
       <section class="lg:col-span-4 flex flex-col gap-4">
         <h2 class="text-xs uppercase tracking-widest font-bold text-gray-400 flex items-center gap-2">
           <span class="w-1.5 h-1.5 rounded-full bg-neonCyan"></span> Palancas de Operación
         </h2>
-        
+
         <!-- CARD: ENERGÍA -->
         <div class="bg-cybercard border border-cyberborder rounded-2xl p-4 shadow-xl">
           <div class="flex items-center gap-2 mb-4 text-neonPurple">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
             <h3 class="font-bold text-sm tracking-wide text-white">Energía e Infraestructura</h3>
           </div>
           <div class="space-y-4">
@@ -168,14 +204,16 @@
                 <span>Mix Diésel (Generadores)</span>
                 <span id="lbl-diesel" class="font-bold text-white">100%</span>
               </div>
-              <input type="range" id="sl-diesel" min="0" max="100" step="5" value="100" class="w-full" oninput="syncSliders('energy-diesel')">
+              <input type="range" id="sl-diesel" min="0" max="100" step="5" value="100" class="w-full"
+                oninput="syncSliders('energy-diesel')">
             </div>
             <div>
               <div class="flex justify-between text-xs text-gray-400 mb-1">
                 <span>Renovables / Biocombustible HVO</span>
                 <span id="lbl-renew" class="font-bold text-white">0%</span>
               </div>
-              <input type="range" id="sl-renew" min="0" max="100" step="5" value="0" class="w-full" oninput="syncSliders('energy-renew')">
+              <input type="range" id="sl-renew" min="0" max="100" step="5" value="0" class="w-full"
+                oninput="syncSliders('energy-renew')">
             </div>
           </div>
         </div>
@@ -183,7 +221,10 @@
         <!-- CARD: BARRAS -->
         <div class="bg-cybercard border border-cyberborder rounded-2xl p-4 shadow-xl">
           <div class="flex items-center gap-2 mb-4 text-neonGreen">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 15H19M9 5a2 2 0 114 0 2 2 0 01-4 0z"/></svg>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 15H19M9 5a2 2 0 114 0 2 2 0 01-4 0z" />
+            </svg>
             <h3 class="font-bold text-sm tracking-wide text-white">Logística de Barras (Circular)</h3>
           </div>
           <div class="space-y-4">
@@ -192,14 +233,16 @@
                 <span>Plásticos de un solo uso</span>
                 <span id="lbl-plastic" class="font-bold text-white">100%</span>
               </div>
-              <input type="range" id="sl-plastic" min="0" max="100" step="5" value="100" class="w-full" oninput="syncSliders('cups-plastic')">
+              <input type="range" id="sl-plastic" min="0" max="100" step="5" value="100" class="w-full"
+                oninput="syncSliders('cups-plastic')">
             </div>
             <div>
               <div class="flex justify-between text-xs text-gray-400 mb-1">
                 <span>Tasa de Reciclaje en Recinto</span>
-                <span id="lbl-recycle" class="font-bold text-white">10%</span>
+                <span id="lbl-recycle" class="font-bold text-white">0%</span>
               </div>
-              <input type="range" id="sl-recycle" min="0" max="100" step="5" value="10" class="w-full" oninput="updateAll()">
+              <input type="range" id="sl-recycle" min="0" max="100" step="5" value="0" class="w-full"
+                oninput="syncSliders('cups-recycle')">
             </div>
           </div>
         </div>
@@ -207,7 +250,10 @@
         <!-- CARD: MOVILIDAD -->
         <div class="bg-cybercard border border-cyberborder rounded-2xl p-4 shadow-xl">
           <div class="flex items-center gap-2 mb-4 text-neonCyan">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
             <h3 class="font-bold text-sm tracking-wide text-white">Plan de Movilidad</h3>
           </div>
           <div class="space-y-4">
@@ -216,14 +262,16 @@
                 <span>Uso del transporte público</span>
                 <span id="lbl-publictrans" class="font-bold text-white">15%</span>
               </div>
-              <input type="range" id="sl-publictrans" min="10" max="90" step="5" value="15" class="w-full" oninput="updateAll()">
+              <input type="range" id="sl-publictrans" min="10" max="90" step="5" value="15" class="w-full"
+                oninput="updateAll()">
             </div>
             <div>
               <div class="flex justify-between text-xs text-gray-400 mb-1">
                 <span>Buses Lanzadera Oficiales</span>
                 <span id="lbl-shuttle" class="font-bold text-white">0%</span>
               </div>
-              <input type="range" id="sl-shuttle" min="0" max="100" step="5" value="0" class="w-full" oninput="updateAll()">
+              <input type="range" id="sl-shuttle" min="0" max="100" step="5" value="0" class="w-full"
+                oninput="updateAll()">
             </div>
           </div>
         </div>
@@ -231,7 +279,10 @@
         <!-- CARD: ENTORNO Y EMPLEO -->
         <div class="bg-cybercard border border-cyberborder rounded-2xl p-4 shadow-xl">
           <div class="flex items-center gap-2 mb-4 text-neonOrange">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
             <h3 class="font-bold text-sm tracking-wide text-white">Empleo Local y Entorno</h3>
           </div>
           <div class="space-y-4">
@@ -240,7 +291,8 @@
                 <span>Tasa Contratación Local</span>
                 <span id="lbl-localhire" class="font-bold text-white">20%</span>
               </div>
-              <input type="range" id="sl-localhire" min="0" max="100" step="5" value="20" class="w-full" oninput="updateAll()">
+              <input type="range" id="sl-localhire" min="0" max="100" step="5" value="20" class="w-full"
+                oninput="updateAll()">
             </div>
             <div>
               <div class="flex justify-between text-xs text-gray-400 mb-1">
@@ -254,7 +306,8 @@
                 <span>Ubicación del Recinto (Periurbana)</span>
                 <span id="lbl-location" class="font-bold text-white">0%</span>
               </div>
-              <input type="range" id="sl-location" min="0" max="100" step="10" value="0" class="w-full" oninput="updateAll()">
+              <input type="range" id="sl-location" min="0" max="100" step="10" value="0" class="w-full"
+                oninput="updateAll()">
             </div>
           </div>
         </div>
@@ -262,7 +315,7 @@
 
       <!-- 3. VISUALIZACIÓN DE INDICADORES (COL 8) -->
       <main class="lg:col-span-8 flex flex-col gap-6">
-        
+
         <!-- KPIs INTEGRADOS CON VALORES REALES -->
         <div>
           <h2 class="text-xs uppercase tracking-widest font-bold text-gray-400 mb-3 flex items-center justify-between">
@@ -272,9 +325,10 @@
             <span class="text-[10px] text-gray-500 font-mono">Simulación de Flujos Reales</span>
           </h2>
           <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-            
+
             <!-- CO2 CARD -->
-            <div class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
+            <div
+              class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
               <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Emisiones Totales</span>
               <div class="mt-2">
                 <span class="text-2xl font-black text-white" id="val-co2">--</span>
@@ -286,7 +340,8 @@
             </div>
 
             <!-- DIESEL CARD -->
-            <div class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
+            <div
+              class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
               <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Consumo de Gasoil</span>
               <div class="mt-2">
                 <span class="text-2xl font-black text-white" id="val-diesel-liters">--</span>
@@ -298,7 +353,8 @@
             </div>
 
             <!-- PLASTIC CARD -->
-            <div class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
+            <div
+              class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
               <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Plásticos de un Solo Uso</span>
               <div class="mt-2">
                 <span class="text-2xl font-black text-white" id="val-plastic-kg">--</span>
@@ -310,7 +366,8 @@
             </div>
 
             <!-- ACUSTICO CARD -->
-            <div class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
+            <div
+              class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
               <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Contaminación Acústica</span>
               <div class="mt-2">
                 <span class="text-2xl font-black text-white" id="val-decibels">--</span>
@@ -322,7 +379,8 @@
             </div>
 
             <!-- SALARIO CARD -->
-            <div class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
+            <div
+              class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
               <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Salario Real Trabajador</span>
               <div class="mt-2">
                 <span class="text-2xl font-black text-white" id="val-salary">--</span>
@@ -334,7 +392,8 @@
             </div>
 
             <!-- PROFIT CARD -->
-            <div class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
+            <div
+              class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
               <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Beneficio Neto (ROI)</span>
               <div class="mt-2">
                 <span class="text-2xl font-black text-white" id="val-roi">--</span>
@@ -350,21 +409,25 @@
 
         <!-- INDICADORES 0-100 & COMPARACIÓN DE ESCENARIOS -->
         <div class="bg-cybercard border border-cyberborder rounded-3xl p-6 shadow-2xl relative overflow-hidden">
-          
+
           <div class="flex items-center justify-between mb-6 pb-4 border-b border-cyberborder">
             <h3 class="font-black text-base text-white tracking-wide">Evaluación en Triple Dimensión (0-100)</h3>
             <div class="flex gap-2">
-              <button class="px-3 py-1 bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] uppercase font-bold tracking-wider rounded border border-cyberborder transition-all" onclick="captureReference()">
+              <button
+                class="px-3 py-1 bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] uppercase font-bold tracking-wider rounded border border-cyberborder transition-all"
+                onclick="captureReference()">
                 Fijar Referencia Comparativa
               </button>
-              <button class="px-2 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-300 text-[10px] uppercase font-bold tracking-wider rounded border border-red-500/30 transition-all hidden" id="btn-clear-ref" onclick="clearReference()">
+              <button
+                class="px-2 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-300 text-[10px] uppercase font-bold tracking-wider rounded border border-red-500/30 transition-all hidden"
+                id="btn-clear-ref" onclick="clearReference()">
                 Limpiar Ref.
               </button>
             </div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
+
             <!-- DIMENSION AMBIENTAL -->
             <div>
               <h4 class="text-xs uppercase tracking-wider font-extrabold text-neonGreen mb-4 flex items-center gap-1.5">
@@ -387,7 +450,8 @@
 
             <!-- DIMENSION ECONÓMICA -->
             <div>
-              <h4 class="text-xs uppercase tracking-wider font-extrabold text-neonOrange mb-4 flex items-center gap-1.5">
+              <h4
+                class="text-xs uppercase tracking-wider font-extrabold text-neonOrange mb-4 flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-neonOrange shadow-lg shadow-neonOrange/50"></span> Económica & Gov
               </h4>
               <div class="space-y-4" id="eco-bars">
@@ -399,7 +463,8 @@
 
           <!-- COMPARATIVA DE ESCENARIOS (TABLA DINÁMICA) -->
           <div id="comparePanel" class="mt-6 pt-5 border-t border-cyberborder hidden">
-            <span class="block text-[10px] uppercase font-black text-neonPurple tracking-widest mb-3">Comparativa Frente al Escenario Guardado</span>
+            <span class="block text-[10px] uppercase font-black text-neonPurple tracking-widest mb-3">Comparativa Frente
+              al Escenario Guardado</span>
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs text-gray-300">
                 <thead>
@@ -423,18 +488,22 @@
         <div class="bg-cybercard border border-cyberborder rounded-3xl p-6 shadow-2xl">
           <div class="flex items-center justify-between mb-4 pb-4 border-b border-cyberborder">
             <div>
-              <span class="px-2 py-0.5 text-[9px] uppercase font-black tracking-wider bg-neonGreen/10 text-neonGreen rounded border border-neonGreen/20">Auditoría del Balance Financiero y Ecológico</span>
+              <span
+                class="px-2 py-0.5 text-[9px] uppercase font-black tracking-wider bg-neonGreen/10 text-neonGreen rounded border border-neonGreen/20">Auditoría
+                del Balance Financiero y Ecológico</span>
               <h3 class="text-base font-extrabold text-white mt-1">Desglose Técnico y de Costes (Auditoría Real)</h3>
             </div>
             <svg class="w-6 h-6 text-neonGreen opacity-85" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
-          
+
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs font-sans">
             <!-- COLUMNA REPARTO FINANCIERO -->
             <div>
-              <h4 class="font-bold text-white mb-2 uppercase tracking-wide text-[10px] text-neonOrange flex items-center gap-1">
+              <h4
+                class="font-bold text-white mb-2 uppercase tracking-wide text-[10px] text-neonOrange flex items-center gap-1">
                 <span>📊</span> Balance de Pérdidas y Ganancias (€)
               </h4>
               <div class="space-y-2 font-mono">
@@ -474,7 +543,8 @@
                   <span class="text-gray-400 font-sans">Plan de Movilidad, Buses y Descuentos:</span>
                   <span id="det-shuttle-cost" class="text-neonRed">-- €</span>
                 </div>
-                <div class="flex justify-between py-1 border-b border-cyberborder/40 hidden text-neonRed font-bold" id="row-fines">
+                <div class="flex justify-between py-1 border-b border-cyberborder/40 hidden text-neonRed font-bold"
+                  id="row-fines">
                   <span class="font-sans">Sanciones Administrativas / Multas:</span>
                   <span id="det-fines-cost">-- €</span>
                 </div>
@@ -483,7 +553,8 @@
 
             <!-- COLUMNA REPARTO ECOLÓGICO -->
             <div>
-              <h4 class="font-bold text-white mb-2 uppercase tracking-wide text-[10px] text-neonGreen flex items-center gap-1">
+              <h4
+                class="font-bold text-white mb-2 uppercase tracking-wide text-[10px] text-neonGreen flex items-center gap-1">
                 <span>🌿</span> Inventario Ecológico y de Carbono
               </h4>
               <div class="space-y-2 font-mono">
@@ -523,76 +594,30 @@
         <!-- 5. ODS IMPACTADOS (GRID DIVERSO) -->
         <div>
           <h3 class="text-xs uppercase tracking-widest font-bold text-gray-400 mb-3 flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-neonCyan"></span> Objetivos de Desarrollo Sostenible (ODS) Priorizados
+            <span class="w-1.5 h-1.5 rounded-full bg-neonCyan"></span> Objetivos de Desarrollo Sostenible (ODS)
+            Priorizados
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-3" id="odsGrid">
             <!-- Inyectado dinámicamente -->
           </div>
         </div>
 
-        <!-- 6. CRISIS SIMULATOR (PITCH DEFENSA INVERSORES / TRIBUNAL DE PROFESORES) -->
-        <div class="bg-cybercard border border-cyberborder rounded-3xl p-6 shadow-2xl relative overflow-hidden" id="crisis-panel">
-          <div class="absolute top-0 right-0 p-8 opacity-5">
-            <svg class="w-32 h-32 text-neonRed" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-          </div>
-          
-          <div class="mb-4">
-            <span class="px-2.5 py-1 bg-red-500/10 text-red-400 border border-red-500/30 text-[9px] uppercase font-black tracking-widest rounded">
-              Defensa del Proyecto en el Aula
-            </span>
-            <h3 class="text-base font-extrabold text-white mt-2">Defensa Activa: Simulador de Eventos Inesperados</h3>
-            <p class="text-xs text-gray-400 mt-1">Selecciona uno de los imprevistos típicos que el tribunal plantea para poner a prueba tu modelo y observa cómo interactúan los cálculos reales.</p>
-          </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
-            <button class="px-3 py-2 bg-white/5 border border-cyberborder hover:bg-red-500/10 hover:border-red-500/40 text-left rounded-xl transition-all" id="btn-crisis-fuel" onclick="toggleCrisis('fuel')">
-              <div class="text-[9px] font-mono text-neonRed">Suministro</div>
-              <div class="text-[11px] font-bold text-white">Gasoil +50%</div>
-            </button>
-            <button class="px-3 py-2 bg-white/5 border border-cyberborder hover:bg-red-500/10 hover:border-red-500/40 text-left rounded-xl transition-all" id="btn-crisis-strike" onclick="toggleCrisis('strike')">
-              <div class="text-[9px] font-mono text-neonRed">Logística</div>
-              <div class="text-[11px] font-bold text-white">Huelga Bus</div>
-            </button>
-            <button class="px-3 py-2 bg-white/5 border border-cyberborder hover:bg-red-500/10 hover:border-red-500/40 text-left rounded-xl transition-all" id="btn-crisis-noise" onclick="toggleCrisis('noise')">
-              <div class="text-[9px] font-mono text-neonRed">Legal</div>
-              <div class="text-[11px] font-bold text-white">Nueva Ley dB</div>
-            </button>
-            <button class="px-3 py-2 bg-white/5 border border-cyberborder hover:bg-red-500/10 hover:border-red-500/40 text-left rounded-xl transition-all" id="btn-crisis-green" onclick="toggleCrisis('green')">
-              <div class="text-[9px] font-mono text-neonRed">Sanción</div>
-              <div class="text-[11px] font-bold text-white font-sans">Plástico Cero</div>
-            </button>
-            <button class="px-3 py-2 bg-white/5 border border-cyberborder hover:bg-red-500/10 hover:border-red-500/40 text-left rounded-xl transition-all" id="btn-crisis-heat" onclick="toggleCrisis('heat')">
-              <div class="text-[9px] font-mono text-neonRed">Clima</div>
-              <div class="text-[11px] font-bold text-white font-sans">Ola de Calor</div>
-            </button>
-          </div>
-
-          <!-- DETALLE DE LA CRISIS ACTIVA -->
-          <div id="crisisAlert" class="mt-4 p-4 bg-red-950/20 border-l-4 border-neonRed rounded-r-xl hidden transition-all">
-            <div class="flex items-start gap-3">
-              <span class="text-neonRed text-lg">⚠️</span>
-              <div>
-                <h4 class="text-xs font-bold text-white uppercase tracking-wider" id="crisisTitle">--</h4>
-                <p class="text-xs text-gray-300 mt-1 leading-relaxed" id="crisisDesc">--</p>
-                <div class="mt-2.5 inline-flex items-center gap-2 bg-neonRed/10 border border-neonRed/20 px-2.5 py-1 rounded">
-                  <span class="text-[10px] text-red-200" id="crisisSolution">Cargando estrategia de mitigación...</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
       </main>
     </div>
 
     <!-- FOOTER -->
-    <footer class="mt-12 pt-6 border-t border-cyberborder text-center text-xs text-gray-500 flex flex-col md:flex-row justify-between items-center gap-4">
+    <footer
+      class="mt-12 pt-6 border-t border-cyberborder text-center text-xs text-gray-500 flex flex-col md:flex-row justify-between items-center gap-4">
       <div>
         <p>Proyectado y sustentado por <strong>Noa, Gerard y Daniel</strong> • Asignatura: Sostenibilitat Aplicada</p>
       </div>
       <div class="flex items-center gap-4">
-        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-neonGreen"></span> Verde: Sostenible / Excelente</span>
-        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-neonOrange"></span> Naranja: ROI / Viable</span>
+        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-neonGreen"></span> Verde:
+          Sostenible / Excelente</span>
+        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-neonOrange"></span> Naranja:
+          ROI / Viable</span>
       </div>
     </footer>
 
@@ -641,27 +666,27 @@
     // ── CONFIGURACIÓN DE LOS ESCENARIOS BASE (PDF) ──
     const SCENARIOS = {
       base: {
-        diesel: 100, renew: 0, plastic: 100, recycle: 10, publictrans: 15, shuttle: 0, localhire: 20, wage: 0, location: 0,
+        diesel: 100, renew: 0, plastic: 100, recycle: 0, publictrans: 15, shuttle: 0, localhire: 20, wage: 0, location: 0,
         label: "<strong>Escenario Base (Tradicional):</strong> Recinto urbano tradicional, logística de mínimo coste, contratación masiva vía ETT externa con salarios de convenio básico y nulo control sobre el flujo de movilidad y residuos de barra."
       },
       h1: {
-        diesel: 100, renew: 0, plastic: 5, recycle: 85, publictrans: 15, shuttle: 0, localhire: 20, wage: 0, location: 0,
+        diesel: 100, renew: 0, plastic: 5, recycle: 95, publictrans: 15, shuttle: 0, localhire: 20, wage: 0, location: 0,
         label: "<strong>Hipótesis 1 (Circularidad en barras):</strong> Eliminación drástica de plásticos de un solo uso mediante un sistema de vasos reutilizables de PP bajo fianza de 1€. Menaje complementario compostable de PLA. Se incrementa un 80% la tasa de circularidad."
       },
       h2: {
-        diesel: 10, renew: 90, plastic: 100, recycle: 10, publictrans: 15, shuttle: 0, localhire: 20, wage: 0, location: 0,
+        diesel: 10, renew: 90, plastic: 100, recycle: 0, publictrans: 15, shuttle: 0, localhire: 20, wage: 0, location: 0,
         label: "<strong>Hipótesis 2 (Descarbonización de infraestructura):</strong> Sustitución de generadores diésel de combustión continua por un combo híbrido alimentado por biocombustible HVO y placas solares para logística, reduciendo el consumo fósil drásticamente."
       },
       h3: {
-        diesel: 100, renew: 0, plastic: 100, recycle: 10, publictrans: 60, shuttle: 80, localhire: 20, wage: 0, location: 0,
+        diesel: 100, renew: 0, plastic: 100, recycle: 0, publictrans: 60, shuttle: 80, localhire: 20, wage: 0, location: 0,
         label: "<strong>Hipótesis 3 (Plan de Movilidad Integral):</strong> Subvención y gestión de buses lanzadera directos desde los nodos de transporte metropolitanos. Fomento con descuento del 10% en barras. Rebaja sustancial en las emisiones indirectas de CO2."
       },
       h4: {
-        diesel: 100, renew: 0, plastic: 100, recycle: 10, publictrans: 15, shuttle: 0, localhire: 100, wage: 15, location: 0,
+        diesel: 100, renew: 0, plastic: 100, recycle: 0, publictrans: 15, shuttle: 0, localhire: 100, wage: 15, location: 0,
         label: "<strong>Hipótesis 4 (Impacto Social y Empleo Ético):</strong> Red de bolsas de trabajo municipales con contratación exclusiva y directa. Incremento salarial del 15% por encima de convenio sectorial para blindar la fidelización local."
       },
       h5: {
-        diesel: 100, renew: 0, plastic: 100, recycle: 10, publictrans: 15, shuttle: 0, localhire: 20, wage: 0, location: 80,
+        diesel: 100, renew: 0, plastic: 100, recycle: 0, publictrans: 15, shuttle: 0, localhire: 20, wage: 0, location: 80,
         label: "<strong>Hipótesis 5 (Control de Ruido Vecinal):</strong> Desplazamiento del festival a las afueras (zona periurbana) con cese programado de música comercial a las 02:00 AM para proteger la paz vecinal. Penaliza ventas de barra pero asegura la licencia acústica."
       }
     };
@@ -673,11 +698,17 @@
     function syncSliders(origin) {
       const slDiesel = document.getElementById('sl-diesel');
       const slRenew = document.getElementById('sl-renew');
+      const slPlastic = document.getElementById('sl-plastic');
+      const slRecycle = document.getElementById('sl-recycle');
 
       if (origin === 'energy-diesel') {
         slRenew.value = 100 - parseInt(slDiesel.value);
       } else if (origin === 'energy-renew') {
         slDiesel.value = 100 - parseInt(slRenew.value);
+      } else if (origin === 'cups-plastic') {
+        slRecycle.value = 100 - parseInt(slPlastic.value);
+      } else if (origin === 'cups-recycle') {
+        slPlastic.value = 100 - parseInt(slRecycle.value);
       }
       updateAll();
     }
@@ -699,7 +730,7 @@
       const activeCrisis = Object.values(CRISES).find(c => c.active);
       const alertBox = document.getElementById('crisisAlert');
       const panel = document.getElementById('crisis-panel');
-      
+
       if (activeCrisis) {
         alertBox.classList.remove('hidden');
         panel.classList.add('crisis-active-border');
@@ -807,8 +838,8 @@
 
       // 2. Huella de Carbono (Movilidad y Generación)
       // Vuelos fijos de Anuel, Ozuna, Mora, Myke Towers y sus equipos (145 tCO2e)
-      const artistFlightEmissions = 145.0; 
-      
+      const artistFlightEmissions = 145.0;
+
       // Ajuste de transporte público debido a huelga
       let realPublicTrans = v.publictrans;
       if (publicTransitReduction && v.shuttle < 75) {
@@ -817,7 +848,7 @@
 
       // Distancia promedio de desplazamiento: 20 km (en ciudad) o 32 km (periurbana/periurbana, location > 30)
       const avgDistance = 20 + (v.location / 100) * 12;
-      
+
       // Coche privado: 0.143 kg CO2/km (con factor de ocupación medio de 2.2 personas en eventos = 0.065 kg CO2 por pasajero-km)
       // Bus/Metro: 0.028 kg CO2 por pasajero-km
       const emissionsFactor = (1 - (realPublicTrans / 100)) * 0.065 + (realPublicTrans / 100) * 0.028;
@@ -842,20 +873,20 @@
       let scoreEnergy = Math.round(v.renew) + scoreEnergyPenalty;
       scoreEnergy = Math.max(5, Math.min(100, scoreEnergy));
 
-      // 4. Residuos Plásticos (Kg)
+      // 4. Residuos Plásticos (Kg) - Mix Continuo y Proporcional
+      const p_single = v.plastic / 100;
+      const p_reusable = 1 - p_single;
+
       // En un festival tradicional se consumen 3.5 vasos de plástico de 12g de un solo uso por asistente (0.042 kg)
       // En un sistema circular con vasos reutilizables de PP se compran vasos robustos y se asume sólo un 12% de pérdidas (0.003 kg por asistente)
-      let plasticGenerated = 0;
-      let scorePlastic = 0;
+      const plasticSingle = v.attendance * 3.5 * 0.012 * p_single;
+      const plasticReusable = v.attendance * 0.12 * 0.025 * p_reusable;
+      plasticGenerated = plasticSingle + plasticReusable;
 
-      if (v.plastic > 15) {
-        plasticGenerated = v.attendance * 3.5 * 0.012; // Kg de plástico de un solo uso
-        scorePlastic = Math.round(v.recycle * 0.65);
-      } else {
-        // Modelo circular PP (fianza de 1€)
-        plasticGenerated = v.attendance * 0.12 * 0.025; // Peso del vaso de PP (25g) por el 12% de extravío
-        scorePlastic = Math.round(90 + (v.recycle * 0.10));
-      }
+      const scoreSingle = v.recycle * 0.65;
+      const scoreReusable = 90 + (v.recycle * 0.10);
+      scorePlastic = Math.round(scoreSingle * p_single + scoreReusable * p_reusable);
+
       scorePlastic = scorePlastic + scorePlasticPenalty;
       scorePlastic = Math.max(5, Math.min(100, scorePlastic));
 
@@ -873,24 +904,22 @@
       // 7. Margen y Beneficio Económico
       // INGRESOS REALES:
       const ticketRevenue = v.attendance * 85.00; // Precio de entrada medio ponderado
-      
+
       // Venta en barra media: 30€. Si es periurbana o cierra antes, baja hasta un 35% de consumo en barras
       const averageBarSpend = 30 * (1 - (v.location / 100) * 0.35);
       const barRevenue = v.attendance * averageBarSpend;
-      
+
       const sponsorsRevenue = v.attendance * 8.00; // Canon de marcas patrocinadoras y foodtrucks
-      
-      // Ingresos extraordinarios de fianza (12% de asistentes se quedan con el vaso de 1€ de recuerdo)
-      let cupDepositRevenue = 0;
-      if (v.plastic <= 15) {
-        cupDepositRevenue = v.attendance * 0.12 * 1.00;
-      }
-      
+
+      // Ingresos extraordinarios de fianza (12% de asistentes se quedan con el vaso de 1€ de recuerdo en el modelo de PP reutilizable)
+      const p_reusable_fianza = 1 - (v.plastic / 100);
+      const cupDepositRevenue = v.attendance * 0.12 * 1.00 * p_reusable_fianza;
+
       const totalRevenue = ticketRevenue + barRevenue + sponsorsRevenue + cupDepositRevenue;
 
       // COSTES OPERATIVOS REALES:
       const bookingCost = 1400000; // Caché combinado de Mora, Ozuna, Myke Towers y Anuel AA
-      
+
       // Alquiler de escenarios, generadores y sonido. El mix ecológico/solar aumenta costes de instalación un 25%
       let baseInfraCost = 250000;
       if (v.renew > 40) {
@@ -904,17 +933,15 @@
       // Coste Energético (Diésel 1.60€/L frente a biocombustible HVO ecológico a 2.20€/L)
       const energyCost = ((dieselLiters * 1.60) + (hvoLiters * 2.20)) * fuelPriceMultiplier;
 
-      // Suministros barra y vajilla
-      let cupLogisticsCost = 0;
+      // Suministros barra y vajilla (Calculado como un mix proporcional y continuo)
+      const p_single_cost = v.plastic / 100;
+      const p_reusable_cost = 1 - p_single_cost;
+
+      const costSingle = v.attendance * 3.5 * 0.08 * p_single_cost;
+      const costReusable = ((v.attendance * 1.2 * 0.35) + (v.attendance * 0.15)) * p_reusable_cost;
+      const cupLogisticsCost = costSingle + costReusable;
+
       const beverageCOGS = barRevenue * 0.22; // Coste de adquisición de bebidas/stock de barra (22% del ingreso)
-      
-      if (v.plastic > 15) {
-        // Compra de 3.5 vasos desechables por persona a 0.05€ c/u + tasa de tratamiento de residuo 0.03€
-        cupLogisticsCost = v.attendance * 3.5 * 0.08;
-      } else {
-        // Modelo circular: Adquisición de stock (1.2 vasos/persona a 0.35€) + costes logísticos de lavado (0.15€/persona)
-        cupLogisticsCost = (v.attendance * 1.2 * 0.35) + (v.attendance * 0.15);
-      }
       const totalBarSuppliesCost = beverageCOGS + cupLogisticsCost;
 
       // Coste del Personal de Evento (1 trabajador por cada 50 asistentes, turno medio ponderado de 16h entre montaje y show)
@@ -925,7 +952,7 @@
       // Buses lanzadera charter (1 bus por cada 200 asistentes planificados a 800€/unidad)
       const busesCount = (v.attendance / 200) * (v.shuttle / 100);
       const shuttleCost = busesCount * 800;
-      
+
       // Coste de la promoción: Descuento del 10% en barras al validar billete de transporte público
       const transitDiscountExpenses = barRevenue * (v.publictrans / 100) * 0.10;
 
@@ -986,7 +1013,7 @@
     // ── ENLACE ESTRATÉGICO CON LOS ODS (PDF TABLE) ──
     function updateODSStatus(metrics) {
       const odsGrid = document.getElementById('odsGrid');
-      
+
       const targetODS = [
         {
           num: 7,
@@ -1034,10 +1061,10 @@
             </div>
           </div>
           <p class="text-[11px] text-gray-300 mt-2 font-light leading-snug font-sans">${ods.desc}</p>
-          ${ods.active 
-            ? `<span class="text-[10px] text-neonGreen font-bold block mt-2 font-sans">✓ ${ods.reason}</span>` 
-            : `<span class="text-[10px] text-gray-500 font-bold block mt-2 font-sans">✗ No cumplido</span>`
-          }
+          ${ods.active
+          ? `<span class="text-[10px] text-neonGreen font-bold block mt-2 font-sans">✓ ${ods.reason}</span>`
+          : `<span class="text-[10px] text-gray-500 font-bold block mt-2 font-sans">✗ No cumplido</span>`
+        }
         </div>
       `).join('');
     }
@@ -1045,7 +1072,7 @@
     // ── ACTUALIZACIÓN GENERAL DEL PANEL Y SCRIPT DE NEGOCIO ──
     function updateAll() {
       const v = getFormValues();
-      
+
       // Mostrar asistencia activa
       document.getElementById('val-attendance-display').textContent = v.attendance.toLocaleString('es-ES');
 
@@ -1165,7 +1192,7 @@
       document.getElementById('det-sgae-cost').textContent = '- ' + Math.round(m.sgaeCost).toLocaleString('es-ES') + ' €';
       document.getElementById('det-bar-cost').textContent = '- ' + Math.round(m.totalBarSuppliesCost).toLocaleString('es-ES') + ' €';
       document.getElementById('det-staff-cost').textContent = '- ' + Math.round(m.staffCost).toLocaleString('es-ES') + ' €';
-      
+
       const totalShuttlePromoCost = m.shuttleCost + m.transitDiscountExpenses;
       document.getElementById('det-shuttle-cost').textContent = '- ' + Math.round(totalShuttlePromoCost).toLocaleString('es-ES') + ' €';
 
@@ -1250,10 +1277,11 @@
     }
 
     // ── INICIALIZACIÓN POR DEFECTO ──
-    window.onload = function() {
+    window.onload = function () {
       // Cargar escenario base por defecto para tener datos iniciales consistentes
       loadScenario('base', document.getElementById('btn-sc-base'));
     }
   </script>
 </body>
+
 </html>
