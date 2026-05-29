@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UrbanFest Sustain & ROI Dashboard</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyberbg: '#0a0a0f',
+            cybercard: '#12121e',
+            cyberborder: 'rgba(255, 255, 255, 0.08)',
+            neonGreen: '#10b981',
+            neonPurple: '#a855f7',
+            neonCyan: '#06b6d4',
+            neonOrange: '#f97316',
+            neonRed: '#ef4444'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0a0a0f;
+    }
+    /* Estilos de neón para inputs de rango de control */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(255, 255, 255, 0.1);
+      height: 6px;
+      border-radius: 9999px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #a855f7;
+      border: 2px solid #ffffff;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.8);
+      transition: all 0.15s ease-in-out;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      box-shadow: 0 0 15px rgba(168, 85, 247, 1);
+    }
+    /* Animación de pulso de emergencia para cuando hay crisis activa */
+    @keyframes pulse-border {
+      0%, 100% { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 5px rgba(239, 68, 68, 0.2); }
+      50% { border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 20px rgba(239, 68, 68, 0.6); }
+    }
+    .crisis-active-border {
+      animation: pulse-border 2s infinite;
+    }
+  </style>
+</head>
+<body class="text-gray-100 min-h-screen pb-12 antialiased">
+
+  <!-- TOP DECORATIVE NEON BAR -->
+  <div class="h-1.5 w-full bg-gradient-to-r from-neonCyan via-neonPurple to-neonOrange"></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+    
+    <!-- HEADER -->
+    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-cyberborder">
+      <div class="flex items-center gap-4">
+        <div class="p-3 bg-gradient-to-br from-neonPurple to-neonCyan rounded-xl shadow-lg shadow-purple-500/20">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm12-3c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-100 to-gray-300">
+              URBANFEST SUSTAINABILITY SIMULATOR
+            </h1>
+            <span class="px-2 py-0.5 text-[10px] uppercase font-bold tracking-widest bg-neonPurple/20 text-purple-300 rounded border border-purple-500/30">V4.0 Alta Fidelidad</span>
+          </div>
+          <p class="text-xs text-gray-400 mt-1">
+            Plataforma de modelado estratégico para festivales de música urbana a escala nacional • <span class="text-neonPurple font-semibold">Noa, Gerard y Daniel</span>
+          </p>
+        </div>
+      </div>
+      
+      <!-- CONFIGURACIÓN GLOBAL DE ASISTENCIA -->
+      <div class="bg-cybercard border border-cyberborder rounded-xl p-3 flex items-center gap-4">
+        <div>
+          <span class="block text-[10px] uppercase font-bold text-gray-400 tracking-wider">Aforo de público (Simulado)</span>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="text-lg font-black text-neonCyan" id="val-attendance-display">30.000</span>
+            <span class="text-xs text-gray-500">Asistentes</span>
+          </div>
+        </div>
+        <div class="w-32">
+          <input type="range" id="sl-attendance" min="20000" max="40000" step="1000" value="30000" class="w-full" oninput="updateAll()">
+        </div>
+      </div>
+    </header>
+
+    <!-- 1. ESCENARIOS PREDEFINIDOS (HIPÓTESIS) -->
+    <section class="mt-6">
+      <h2 class="text-xs uppercase tracking-widest font-bold text-gray-400 mb-3 flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-neonPurple"></span> Hipótesis Operativas y Escenarios Base (PDF)
+      </h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+        <button class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all active-scenario-btn font-sans" id="btn-sc-base" onclick="loadScenario('base', this)">
+          <div class="text-[10px] font-bold text-gray-400">Escenario Base</div>
+          <div class="text-xs font-semibold mt-0.5 text-white">100% Tradicional</div>
+        </button>
+        <button class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all font-sans" id="btn-sc-h1" onclick="loadScenario('h1', this)">
+          <div class="text-[10px] font-bold text-neonGreen">Hipótesis 1 (H1)</div>
+          <div class="text-xs font-semibold mt-0.5 text-white">Menaje Circular</div>
+        </button>
+        <button class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all" id="btn-sc-h2" onclick="loadScenario('h2', this)">
+          <div class="text-[10px] font-bold text-neonPurple">Hipótesis 2 (H2)</div>
+          <div class="text-xs font-semibold mt-0.5 text-white">Descarbonización</div>
+        </button>
+        <button class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all font-sans" id="btn-sc-h3" onclick="loadScenario('h3', this)">
+          <div class="text-[10px] font-bold text-neonCyan">Hipótesis 3 (H3)</div>
+          <div class="text-xs font-semibold mt-0.5 text-white">Buses Lanzadera</div>
+        </button>
+        <button class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all font-sans" id="btn-sc-h4" onclick="loadScenario('h4', this)">
+          <div class="text-[10px] font-bold text-neonOrange">Hipótesis 4 (H4)</div>
+          <div class="text-xs font-semibold mt-0.5 text-white">Empleo Local +15%</div>
+        </button>
+        <button class="px-3 py-2.5 rounded-xl border border-cyberborder bg-cybercard hover:bg-gray-800 text-left transition-all font-sans" id="btn-sc-h5" onclick="loadScenario('h5', this)">
+          <div class="text-[10px] font-bold text-neonRed">Hipótesis 5 (H5)</div>
+          <div class="text-xs font-semibold mt-0.5 text-white">Zona Periurbana</div>
+        </button>
+      </div>
+
+      <!-- DESCRIPCIÓN DEL ESCENARIO ACTIVO -->
+      <div id="impactNotice" class="mt-3 p-4 bg-cybercard border-l-4 border-neonPurple rounded-r-xl text-xs text-gray-300 leading-relaxed shadow-lg"></div>
+    </section>
+
+    <!-- CONTENIDO CENTRAL: PALANCAS Y DATOS -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
+      
+      <!-- 2. PALANCAS DE DECISIÓN (COL 4) -->
+      <section class="lg:col-span-4 flex flex-col gap-4">
+        <h2 class="text-xs uppercase tracking-widest font-bold text-gray-400 flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-neonCyan"></span> Palancas de Operación
+        </h2>
+        
+        <!-- CARD: ENERGÍA -->
+        <div class="bg-cybercard border border-cyberborder rounded-2xl p-4 shadow-xl">
+          <div class="flex items-center gap-2 mb-4 text-neonPurple">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <h3 class="font-bold text-sm tracking-wide text-white">Energía e Infraestructura</h3>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Mix Diésel (Generadores)</span>
+                <span id="lbl-diesel" class="font-bold text-white">100%</span>
+              </div>
+              <input type="range" id="sl-diesel" min="0" max="100" step="5" value="100" class="w-full" oninput="syncSliders('energy-diesel')">
+            </div>
+            <div>
+              <div class="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Renovables / Biocombustible HVO</span>
+                <span id="lbl-renew" class="font-bold text-white">0%</span>
+              </div>
+              <input type="range" id="sl-renew" min="0" max="100" step="5" value="0" class="w-full" oninput="syncSliders('energy-renew')">
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD: BARRAS -->
+        <div class="bg-cybercard border border-cyberborder rounded-2xl p-4 shadow-xl">
+          <div class="flex items-center gap-2 mb-4 text-neonGreen">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 15H19M9 5a2 2 0 114 0 2 2 0 01-4 0z"/></svg>
+            <h3 class="font-bold text-sm tracking-wide text-white">Logística de Barras (Circular)</h3>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Plásticos de un solo uso</span>
+                <span id="lbl-plastic" class="font-bold text-white">100%</span>
+              </div>
+              <input type="range" id="sl-plastic" min="0" max="100" step="5" value="100" class="w-full" oninput="syncSliders('cups-plastic')">
+            </div>
+            <div>
+              <div class="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Tasa de Reciclaje en Recinto</span>
+                <span id="lbl-recycle" class="font-bold text-white">10%</span>
+              </div>
+              <input type="range" id="sl-recycle" min="0" max="100" step="5" value="10" class="w-full" oninput="updateAll()">
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD: MOVILIDAD -->
+        <div class="bg-cybercard border border-cyberborder rounded-2xl p-4 shadow-xl">
+          <div class="flex items-center gap-2 mb-4 text-neonCyan">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+            <h3 class="font-bold text-sm tracking-wide text-white">Plan de Movilidad</h3>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Uso del transporte público</span>
+                <span id="lbl-publictrans" class="font-bold text-white">15%</span>
+              </div>
+              <input type="range" id="sl-publictrans" min="10" max="90" step="5" value="15" class="w-full" oninput="updateAll()">
+            </div>
+            <div>
+              <div class="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Buses Lanzadera Oficiales</span>
+                <span id="lbl-shuttle" class="font-bold text-white">0%</span>
+              </div>
+              <input type="range" id="sl-shuttle" min="0" max="100" step="5" value="0" class="w-full" oninput="updateAll()">
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD: ENTORNO Y EMPLEO -->
+        <div class="bg-cybercard border border-cyberborder rounded-2xl p-4 shadow-xl">
+          <div class="flex items-center gap-2 mb-4 text-neonOrange">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <h3 class="font-bold text-sm tracking-wide text-white">Empleo Local y Entorno</h3>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Tasa Contratación Local</span>
+                <span id="lbl-localhire" class="font-bold text-white">20%</span>
+              </div>
+              <input type="range" id="sl-localhire" min="0" max="100" step="5" value="20" class="w-full" oninput="updateAll()">
+            </div>
+            <div>
+              <div class="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Incremento Salarial</span>
+                <span id="lbl-wage" class="font-bold text-white">0%</span>
+              </div>
+              <input type="range" id="sl-wage" min="0" max="30" step="5" value="0" class="w-full" oninput="updateAll()">
+            </div>
+            <div>
+              <div class="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Ubicación del Recinto (Periurbana)</span>
+                <span id="lbl-location" class="font-bold text-white">0%</span>
+              </div>
+              <input type="range" id="sl-location" min="0" max="100" step="10" value="0" class="w-full" oninput="updateAll()">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. VISUALIZACIÓN DE INDICADORES (COL 8) -->
+      <main class="lg:col-span-8 flex flex-col gap-6">
+        
+        <!-- KPIs INTEGRADOS CON VALORES REALES -->
+        <div>
+          <h2 class="text-xs uppercase tracking-widest font-bold text-gray-400 mb-3 flex items-center justify-between">
+            <span class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-neonGreen"></span> Datos de Impacto Físico Estimado
+            </span>
+            <span class="text-[10px] text-gray-500 font-mono">Simulación de Flujos Reales</span>
+          </h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            
+            <!-- CO2 CARD -->
+            <div class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
+              <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Emisiones Totales</span>
+              <div class="mt-2">
+                <span class="text-2xl font-black text-white" id="val-co2">--</span>
+                <span class="text-[11px] text-gray-400 ml-1">tCO₂e</span>
+              </div>
+              <span class="text-[10px] text-red-400 mt-1 flex items-center gap-1" id="eval-co2">
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Crítico
+              </span>
+            </div>
+
+            <!-- DIESEL CARD -->
+            <div class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
+              <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Consumo de Gasoil</span>
+              <div class="mt-2">
+                <span class="text-2xl font-black text-white" id="val-diesel-liters">--</span>
+                <span class="text-[11px] text-gray-400 ml-1">Litros</span>
+              </div>
+              <span class="text-[10px] text-red-400 mt-1 flex items-center gap-1" id="eval-diesel">
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Crítico
+              </span>
+            </div>
+
+            <!-- PLASTIC CARD -->
+            <div class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
+              <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Plásticos de un Solo Uso</span>
+              <div class="mt-2">
+                <span class="text-2xl font-black text-white" id="val-plastic-kg">--</span>
+                <span class="text-[11px] text-gray-400 ml-1">Kg</span>
+              </div>
+              <span class="text-[10px] text-red-400 mt-1 flex items-center gap-1" id="eval-plastic">
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Crítico
+              </span>
+            </div>
+
+            <!-- ACUSTICO CARD -->
+            <div class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
+              <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Contaminación Acústica</span>
+              <div class="mt-2">
+                <span class="text-2xl font-black text-white" id="val-decibels">--</span>
+                <span class="text-[11px] text-gray-400 ml-1">dB (Línea Límite)</span>
+              </div>
+              <span class="text-[10px] text-amber-400 mt-1 flex items-center gap-1" id="eval-decibels">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Ruido Molesto
+              </span>
+            </div>
+
+            <!-- SALARIO CARD -->
+            <div class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
+              <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Salario Real Trabajador</span>
+              <div class="mt-2">
+                <span class="text-2xl font-black text-white" id="val-salary">--</span>
+                <span class="text-[11px] text-gray-400 ml-1">€/hora</span>
+              </div>
+              <span class="text-[10px] text-emerald-400 mt-1 flex items-center gap-1" id="eval-salary">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Convenio Justo
+              </span>
+            </div>
+
+            <!-- PROFIT CARD -->
+            <div class="p-4 rounded-2xl bg-cybercard border border-cyberborder hover:border-neonPurple/40 transition-all flex flex-col justify-between">
+              <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Beneficio Neto (ROI)</span>
+              <div class="mt-2">
+                <span class="text-2xl font-black text-white" id="val-roi">--</span>
+                <span class="text-[11px] text-gray-400 ml-1">€ Netos</span>
+              </div>
+              <span class="text-[10px] text-emerald-400 mt-1 flex items-center gap-1" id="eval-roi">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Alta Rentabilidad
+              </span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- INDICADORES 0-100 & COMPARACIÓN DE ESCENARIOS -->
+        <div class="bg-cybercard border border-cyberborder rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+          
+          <div class="flex items-center justify-between mb-6 pb-4 border-b border-cyberborder">
+            <h3 class="font-black text-base text-white tracking-wide">Evaluación en Triple Dimensión (0-100)</h3>
+            <div class="flex gap-2">
+              <button class="px-3 py-1 bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] uppercase font-bold tracking-wider rounded border border-cyberborder transition-all" onclick="captureReference()">
+                Fijar Referencia Comparativa
+              </button>
+              <button class="px-2 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-300 text-[10px] uppercase font-bold tracking-wider rounded border border-red-500/30 transition-all hidden" id="btn-clear-ref" onclick="clearReference()">
+                Limpiar Ref.
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- DIMENSION AMBIENTAL -->
+            <div>
+              <h4 class="text-xs uppercase tracking-wider font-extrabold text-neonGreen mb-4 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-neonGreen shadow-lg shadow-neonGreen/50"></span> Ambiental
+              </h4>
+              <div class="space-y-4" id="env-bars">
+                <!-- Generado dinámicamente -->
+              </div>
+            </div>
+
+            <!-- DIMENSION SOCIAL -->
+            <div>
+              <h4 class="text-xs uppercase tracking-wider font-extrabold text-neonCyan mb-4 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-neonCyan shadow-lg shadow-neonCyan/50"></span> Social
+              </h4>
+              <div class="space-y-4" id="social-bars">
+                <!-- Generado dinámicamente -->
+              </div>
+            </div>
+
+            <!-- DIMENSION ECONÓMICA -->
+            <div>
+              <h4 class="text-xs uppercase tracking-wider font-extrabold text-neonOrange mb-4 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-neonOrange shadow-lg shadow-neonOrange/50"></span> Económica & Gov
+              </h4>
+              <div class="space-y-4" id="eco-bars">
+                <!-- Generado dinámicamente -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- COMPARATIVA DE ESCENARIOS (TABLA DINÁMICA) -->
+          <div id="comparePanel" class="mt-6 pt-5 border-t border-cyberborder hidden">
+            <span class="block text-[10px] uppercase font-black text-neonPurple tracking-widest mb-3">Comparativa Frente al Escenario Guardado</span>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-gray-300">
+                <thead>
+                  <tr class="text-[10px] text-gray-400 uppercase border-b border-cyberborder/60">
+                    <th class="pb-2">Dimensión e Indicador</th>
+                    <th class="pb-2 text-right">Ref. Guardada</th>
+                    <th class="pb-2 text-right">Valor Actual</th>
+                    <th class="pb-2 text-right">Desviación</th>
+                  </tr>
+                </thead>
+                <tbody id="compareTableBody" class="divide-y divide-cyberborder/40 font-mono">
+                  <!-- Inyectado mediante JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 4. BALANCE FINANCIERO Y ECOLÓGICO DETALLADO (MÁXIMA FIABILIDAD REAL) -->
+        <div class="bg-cybercard border border-cyberborder rounded-3xl p-6 shadow-2xl">
+          <div class="flex items-center justify-between mb-4 pb-4 border-b border-cyberborder">
+            <div>
+              <span class="px-2 py-0.5 text-[9px] uppercase font-black tracking-wider bg-neonGreen/10 text-neonGreen rounded border border-neonGreen/20">Auditoría del Balance Financiero y Ecológico</span>
+              <h3 class="text-base font-extrabold text-white mt-1">Desglose Técnico y de Costes (Auditoría Real)</h3>
+            </div>
+            <svg class="w-6 h-6 text-neonGreen opacity-85" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs font-sans">
+            <!-- COLUMNA REPARTO FINANCIERO -->
+            <div>
+              <h4 class="font-bold text-white mb-2 uppercase tracking-wide text-[10px] text-neonOrange flex items-center gap-1">
+                <span>📊</span> Balance de Pérdidas y Ganancias (€)
+              </h4>
+              <div class="space-y-2 font-mono">
+                <div class="flex justify-between py-1 border-b border-cyberborder/40">
+                  <span class="text-gray-400 font-sans">Ingresos por Venta de Entradas:</span>
+                  <span id="det-ticket-inc" class="text-white">-- €</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-cyberborder/40">
+                  <span class="text-gray-400 font-sans">Ingresos por Consumo de Barras:</span>
+                  <span id="det-bar-inc" class="text-white">-- €</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-cyberborder/40 font-sans text-gray-400">
+                  <span>Sponsoring y Foodtrucks:</span>
+                  <span id="det-spons-inc" class="text-white font-mono">-- €</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-cyberborder/40">
+                  <span class="text-gray-400 font-sans">Costes de Booking de Artistas:</span>
+                  <span class="text-neonRed font-bold">- 1.400.000 €</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-cyberborder/40">
+                  <span class="text-gray-400 font-sans">Escenarios e Infraestructura Audiovisual:</span>
+                  <span id="det-infra-cost" class="text-neonRed">-- €</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-cyberborder/40">
+                  <span class="text-gray-400 font-sans">Tasas SGAE (8,5% Taquilla) e Impuestos:</span>
+                  <span id="det-sgae-cost" class="text-neonRed">-- €</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-cyberborder/40">
+                  <span class="text-gray-400 font-sans">Coste de Bebidas y Vasos (COGS):</span>
+                  <span id="det-bar-cost" class="text-neonRed">-- €</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-cyberborder/40">
+                  <span class="text-gray-400 font-sans">Nóminas de Personal (Incl. Seg. Social):</span>
+                  <span id="det-staff-cost" class="text-neonRed">-- €</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-cyberborder/40">
+                  <span class="text-gray-400 font-sans">Plan de Movilidad, Buses y Descuentos:</span>
+                  <span id="det-shuttle-cost" class="text-neonRed">-- €</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-cyberborder/40 hidden text-neonRed font-bold" id="row-fines">
+                  <span class="font-sans">Sanciones Administrativas / Multas:</span>
+                  <span id="det-fines-cost">-- €</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- COLUMNA REPARTO ECOLÓGICO -->
+            <div>
+              <h4 class="font-bold text-white mb-2 uppercase tracking-wide text-[10px] text-neonGreen flex items-center gap-1">
+                <span>🌿</span> Inventario Ecológico y de Carbono
+              </h4>
+              <div class="space-y-2 font-mono">
+                <div class="flex justify-between py-1 border-b border-cyberborder/40">
+                  <span class="text-gray-400 font-sans">Vuelos y Logística de Artistas:</span>
+                  <span class="text-white">145,0 tCO₂e</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-cyberborder/40">
+                  <span class="text-gray-400 font-sans">Transporte de Asistentes:</span>
+                  <span id="det-public-co2" class="text-white">-- tCO₂e</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-cyberborder/40">
+                  <span class="text-gray-400 font-sans">Emisiones por Generadores Eléctricos:</span>
+                  <span id="det-gen-co2" class="text-white">-- tCO₂e</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-cyberborder/40 text-gray-400 font-sans">
+                  <span>Consumo Eléctrico de Red:</span>
+                  <span class="text-white font-mono">0,0 tCO₂e</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-cyberborder/40">
+                  <span class="text-gray-400 font-sans">Consumibles Plásticos Fabricados:</span>
+                  <span id="det-plastic-total" class="text-neonRed">-- Kg</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-cyberborder/40">
+                  <span class="text-gray-400 font-sans">Plásticos Clasificados y Reciclados:</span>
+                  <span id="det-plastic-recycled" class="text-neonGreen">-- Kg</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-cyberborder/40">
+                  <span class="text-gray-400 font-sans">Residuos Plásticos Enviados a Vertedero:</span>
+                  <span id="det-plastic-landfill" class="text-neonOrange">-- Kg</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. ODS IMPACTADOS (GRID DIVERSO) -->
+        <div>
+          <h3 class="text-xs uppercase tracking-widest font-bold text-gray-400 mb-3 flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-neonCyan"></span> Objetivos de Desarrollo Sostenible (ODS) Priorizados
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-3" id="odsGrid">
+            <!-- Inyectado dinámicamente -->
+          </div>
+        </div>
+
+        <!-- 6. CRISIS SIMULATOR (PITCH DEFENSA INVERSORES / TRIBUNAL DE PROFESORES) -->
+        <div class="bg-cybercard border border-cyberborder rounded-3xl p-6 shadow-2xl relative overflow-hidden" id="crisis-panel">
+          <div class="absolute top-0 right-0 p-8 opacity-5">
+            <svg class="w-32 h-32 text-neonRed" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          </div>
+          
+          <div class="mb-4">
+            <span class="px-2.5 py-1 bg-red-500/10 text-red-400 border border-red-500/30 text-[9px] uppercase font-black tracking-widest rounded">
+              Defensa del Proyecto en el Aula
+            </span>
+            <h3 class="text-base font-extrabold text-white mt-2">Defensa Activa: Simulador de Eventos Inesperados</h3>
+            <p class="text-xs text-gray-400 mt-1">Selecciona uno de los imprevistos típicos que el tribunal plantea para poner a prueba tu modelo y observa cómo interactúan los cálculos reales.</p>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            <button class="px-3 py-2 bg-white/5 border border-cyberborder hover:bg-red-500/10 hover:border-red-500/40 text-left rounded-xl transition-all" id="btn-crisis-fuel" onclick="toggleCrisis('fuel')">
+              <div class="text-[9px] font-mono text-neonRed">Suministro</div>
+              <div class="text-[11px] font-bold text-white">Gasoil +50%</div>
+            </button>
+            <button class="px-3 py-2 bg-white/5 border border-cyberborder hover:bg-red-500/10 hover:border-red-500/40 text-left rounded-xl transition-all" id="btn-crisis-strike" onclick="toggleCrisis('strike')">
+              <div class="text-[9px] font-mono text-neonRed">Logística</div>
+              <div class="text-[11px] font-bold text-white">Huelga Bus</div>
+            </button>
+            <button class="px-3 py-2 bg-white/5 border border-cyberborder hover:bg-red-500/10 hover:border-red-500/40 text-left rounded-xl transition-all" id="btn-crisis-noise" onclick="toggleCrisis('noise')">
+              <div class="text-[9px] font-mono text-neonRed">Legal</div>
+              <div class="text-[11px] font-bold text-white">Nueva Ley dB</div>
+            </button>
+            <button class="px-3 py-2 bg-white/5 border border-cyberborder hover:bg-red-500/10 hover:border-red-500/40 text-left rounded-xl transition-all" id="btn-crisis-green" onclick="toggleCrisis('green')">
+              <div class="text-[9px] font-mono text-neonRed">Sanción</div>
+              <div class="text-[11px] font-bold text-white font-sans">Plástico Cero</div>
+            </button>
+            <button class="px-3 py-2 bg-white/5 border border-cyberborder hover:bg-red-500/10 hover:border-red-500/40 text-left rounded-xl transition-all" id="btn-crisis-heat" onclick="toggleCrisis('heat')">
+              <div class="text-[9px] font-mono text-neonRed">Clima</div>
+              <div class="text-[11px] font-bold text-white font-sans">Ola de Calor</div>
+            </button>
+          </div>
+
+          <!-- DETALLE DE LA CRISIS ACTIVA -->
+          <div id="crisisAlert" class="mt-4 p-4 bg-red-950/20 border-l-4 border-neonRed rounded-r-xl hidden transition-all">
+            <div class="flex items-start gap-3">
+              <span class="text-neonRed text-lg">⚠️</span>
+              <div>
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider" id="crisisTitle">--</h4>
+                <p class="text-xs text-gray-300 mt-1 leading-relaxed" id="crisisDesc">--</p>
+                <div class="mt-2.5 inline-flex items-center gap-2 bg-neonRed/10 border border-neonRed/20 px-2.5 py-1 rounded">
+                  <span class="text-[10px] text-red-200" id="crisisSolution">Cargando estrategia de mitigación...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="mt-12 pt-6 border-t border-cyberborder text-center text-xs text-gray-500 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div>
+        <p>Proyectado y sustentado por <strong>Noa, Gerard y Daniel</strong> • Asignatura: Sostenibilitat Aplicada</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-neonGreen"></span> Verde: Sostenible / Excelente</span>
+        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-neonOrange"></span> Naranja: ROI / Viable</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // ── CONFIGURACIONES DE CRISIS INTEGRADAS AL MOTOR FINANCIERO Y ECOLÓGICO REAL ──
+    const CRISES = {
+      fuel: {
+        active: false,
+        title: "Subida de costes del 50% en Gasoil y carburantes",
+        desc: "Las tensiones geopolíticas disparan los precios del combustible diésel a 2,40€/L y HVO a 2,90€/L. Si tu mix eléctrico energético depende de generadores, el beneficio neto descenderá drásticamente.",
+        solution: "MITIGACIÓN: Sube la palanca de Energía Renovable para reducir la dependencia de gasoil o conéctate a la Red Local.",
+        modifiers: { fuelPriceMultiplier: 1.5, scoreEnergyPenalty: -15 }
+      },
+      strike: {
+        active: false,
+        title: "Huelga patronal de transportes del área metropolitana",
+        desc: "La red de transporte público urbano del ayuntamiento queda paralizada. Esto fuerza a los asistentes a desplazarse en coche privado, disparando la huella de carbono y colapsando los accesos (caída de seguridad).",
+        solution: "MITIGACIÓN: Sube la palanca de Buses Lanzadera Oficiales al 75% o más para absorber el transporte con flota propia.",
+        modifiers: { publicTransitReduction: true, scoreCO2Penalty: -25, safetyPenalty: -20 }
+      },
+      noise: {
+        active: false,
+        title: "Modificación de Ordenanza Municipal de Ruido a 80dB",
+        desc: "El ayuntamiento impone un límite severo de ruido por quejas del vecindario. Si estás en el centro urbano, serás sancionado con 50.000€ y el indicador acústico se desplomará.",
+        solution: "MITIGACIÓN: Mueve el Recinto hacia la Zona Periurbana (Palanca de Ubicación al 50% o más) para evitar la multa.",
+        modifiers: { noisePenalty: true, fineAmount: 50000, scoreAcusticoPenalty: -30 }
+      },
+      green: {
+        active: false,
+        title: "Inspección sorpresa de la Consellería de Medio Ambiente",
+        desc: "Los inspectores detectan vasos plásticos no reciclables de un solo uso en las barras. Se tramita una propuesta de sanción de 45.000€.",
+        solution: "MITIGACIÓN: Baja la palanca de Plásticos de un solo uso al 15% o menos (H1 - Menaje circular) para eliminar la multa.",
+        modifiers: { plasticFine: true, fineAmount: 45000, scorePlasticPenalty: -20 }
+      },
+      heat: {
+        active: false,
+        title: "Aviso rojo por Ola de Calor Extremo (41ºC nocturnos)",
+        desc: "Protocolo de emergencia de Protección Civil. Obligación de instalar 2 islas extra de hidratación y contratar 8 sanitarios de urgencia (+30.000€). El consumo de generadores sube un 20%. Riesgo de lipotimias.",
+        solution: "MITIGACIÓN: Para recuperar la seguridad, sube el incremento salarial al 15%+ (H4) para asegurar personal descansado e motivado.",
+        modifiers: { heatwaveCost: 30000, generatorEfficiencyDrop: 1.20, safetyPenalty: -15 }
+      }
+    };
+
+    // ── CONFIGURACIÓN DE LOS ESCENARIOS BASE (PDF) ──
+    const SCENARIOS = {
+      base: {
+        diesel: 100, renew: 0, plastic: 100, recycle: 10, publictrans: 15, shuttle: 0, localhire: 20, wage: 0, location: 0,
+        label: "<strong>Escenario Base (Tradicional):</strong> Recinto urbano tradicional, logística de mínimo coste, contratación masiva vía ETT externa con salarios de convenio básico y nulo control sobre el flujo de movilidad y residuos de barra."
+      },
+      h1: {
+        diesel: 100, renew: 0, plastic: 5, recycle: 85, publictrans: 15, shuttle: 0, localhire: 20, wage: 0, location: 0,
+        label: "<strong>Hipótesis 1 (Circularidad en barras):</strong> Eliminación drástica de plásticos de un solo uso mediante un sistema de vasos reutilizables de PP bajo fianza de 1€. Menaje complementario compostable de PLA. Se incrementa un 80% la tasa de circularidad."
+      },
+      h2: {
+        diesel: 10, renew: 90, plastic: 100, recycle: 10, publictrans: 15, shuttle: 0, localhire: 20, wage: 0, location: 0,
+        label: "<strong>Hipótesis 2 (Descarbonización de infraestructura):</strong> Sustitución de generadores diésel de combustión continua por un combo híbrido alimentado por biocombustible HVO y placas solares para logística, reduciendo el consumo fósil drásticamente."
+      },
+      h3: {
+        diesel: 100, renew: 0, plastic: 100, recycle: 10, publictrans: 60, shuttle: 80, localhire: 20, wage: 0, location: 0,
+        label: "<strong>Hipótesis 3 (Plan de Movilidad Integral):</strong> Subvención y gestión de buses lanzadera directos desde los nodos de transporte metropolitanos. Fomento con descuento del 10% en barras. Rebaja sustancial en las emisiones indirectas de CO2."
+      },
+      h4: {
+        diesel: 100, renew: 0, plastic: 100, recycle: 10, publictrans: 15, shuttle: 0, localhire: 100, wage: 15, location: 0,
+        label: "<strong>Hipótesis 4 (Impacto Social y Empleo Ético):</strong> Red de bolsas de trabajo municipales con contratación exclusiva y directa. Incremento salarial del 15% por encima de convenio sectorial para blindar la fidelización local."
+      },
+      h5: {
+        diesel: 100, renew: 0, plastic: 100, recycle: 10, publictrans: 15, shuttle: 0, localhire: 20, wage: 0, location: 80,
+        label: "<strong>Hipótesis 5 (Control de Ruido Vecinal):</strong> Desplazamiento del festival a las afueras (zona periurbana) con cese programado de música comercial a las 02:00 AM para proteger la paz vecinal. Penaliza ventas de barra pero asegura la licencia acústica."
+      }
+    };
+
+    const KEYS = ['diesel', 'renew', 'plastic', 'recycle', 'publictrans', 'shuttle', 'localhire', 'wage', 'location'];
+    let referenceScenario = null; // Almacén para el escenario comparativo
+
+    // ── FUNCIONAMIENTO DE SLIDERS CRUZADOS ──
+    function syncSliders(origin) {
+      const slDiesel = document.getElementById('sl-diesel');
+      const slRenew = document.getElementById('sl-renew');
+
+      if (origin === 'energy-diesel') {
+        slRenew.value = 100 - parseInt(slDiesel.value);
+      } else if (origin === 'energy-renew') {
+        slDiesel.value = 100 - parseInt(slRenew.value);
+      }
+      updateAll();
+    }
+
+    // ── INTERRUPTORES DE CRISIS ──
+    function toggleCrisis(key) {
+      const btn = document.getElementById('btn-crisis-' + key);
+      CRISES[key].active = !CRISES[key].active;
+
+      if (CRISES[key].active) {
+        btn.classList.add('bg-red-500/20', 'border-red-500', 'text-white');
+        btn.classList.remove('bg-white/5', 'border-cyberborder');
+      } else {
+        btn.classList.remove('bg-red-500/20', 'border-red-500');
+        btn.classList.add('bg-white/5', 'border-cyberborder');
+      }
+
+      // Renderizar el detalle de la crisis activa de forma secuencial
+      const activeCrisis = Object.values(CRISES).find(c => c.active);
+      const alertBox = document.getElementById('crisisAlert');
+      const panel = document.getElementById('crisis-panel');
+      
+      if (activeCrisis) {
+        alertBox.classList.remove('hidden');
+        panel.classList.add('crisis-active-border');
+        document.getElementById('crisisTitle').textContent = activeCrisis.title;
+        document.getElementById('crisisDesc').textContent = activeCrisis.desc;
+        document.getElementById('crisisSolution').textContent = activeCrisis.solution;
+      } else {
+        alertBox.classList.add('hidden');
+        panel.classList.remove('crisis-active-border');
+      }
+
+      updateAll();
+    }
+
+    // ── CARGAR ESCENARIO PREDEFINIDO ──
+    function loadScenario(key, btn) {
+      document.querySelectorAll('.active-scenario-btn').forEach(b => {
+        b.classList.remove('active-scenario-btn', 'border-neonPurple', 'bg-neonPurple/10');
+      });
+      btn.classList.add('active-scenario-btn', 'border-neonPurple', 'bg-neonPurple/10');
+
+      const s = SCENARIOS[key];
+      KEYS.forEach(k => {
+        document.getElementById('sl-' + k).value = s[k];
+      });
+
+      const notice = document.getElementById('impactNotice');
+      notice.innerHTML = s.label;
+
+      updateAll();
+    }
+
+    // ── LECTURA DE VALORES DEL PANEL ──
+    function getFormValues() {
+      const vals = { attendance: parseInt(document.getElementById('sl-attendance').value) };
+      KEYS.forEach(k => {
+        vals[k] = parseInt(document.getElementById('sl-' + k).value);
+      });
+      return vals;
+    }
+
+    // ── COMPORTAMIENTO MATEMÁTICO REALISTA DE LOS DATOS (IMPACTO FÍSICO) ──
+    function calculateRealMetrics(v) {
+      // 1. Cargar Modificadores por Crisis
+      let fuelPriceMultiplier = 1.0;
+      let publicTransitReduction = false;
+      let noisePenalty = false;
+      let plasticFine = false;
+      let heatwaveCost = 0;
+      let generatorEfficiencyDrop = 1.0;
+
+      let scoreCO2Penalty = 0;
+      let scoreEnergyPenalty = 0;
+      let scorePlasticPenalty = 0;
+      let scoreAcusticoPenalty = 0;
+      let safetyPenalty = 0;
+      let fineExpenses = 0;
+
+      if (CRISES.fuel.active) {
+        fuelPriceMultiplier = CRISES.fuel.modifiers.fuelPriceMultiplier;
+        scoreEnergyPenalty = CRISES.fuel.modifiers.scoreEnergyPenalty;
+      }
+      if (CRISES.strike.active) {
+        publicTransitReduction = CRISES.strike.modifiers.publicTransitReduction;
+        // La mitigación requiere Buses Lanzadera al 75% o más
+        if (v.shuttle >= 75) {
+          // Mitigado
+          scoreCO2Penalty = -5;
+          safetyPenalty = -5;
+        } else {
+          scoreCO2Penalty = CRISES.strike.modifiers.scoreCO2Penalty;
+          safetyPenalty = CRISES.strike.modifiers.safetyPenalty;
+        }
+      }
+      if (CRISES.noise.active) {
+        noisePenalty = CRISES.noise.modifiers.noisePenalty;
+        // La mitigación requiere que el recinto esté en zona periurbana (Location al 50% o más)
+        if (v.location >= 50) {
+          scoreAcusticoPenalty = -5;
+        } else {
+          scoreAcusticoPenalty = CRISES.noise.modifiers.scoreAcusticoPenalty;
+          fineExpenses += CRISES.noise.modifiers.fineAmount;
+        }
+      }
+      if (CRISES.green.active) {
+        plasticFine = CRISES.green.modifiers.plasticFine;
+        // La mitigación requiere vasos de un solo uso al 15% o menos
+        if (v.plastic <= 15) {
+          scorePlasticPenalty = -5;
+        } else {
+          scorePlasticPenalty = CRISES.green.modifiers.scorePlasticPenalty;
+          fineExpenses += CRISES.green.modifiers.fineAmount;
+        }
+      }
+      if (CRISES.heat.active) {
+        heatwaveCost = CRISES.heat.modifiers.heatwaveCost;
+        generatorEfficiencyDrop = CRISES.heat.modifiers.generatorEfficiencyDrop;
+        // La mitigación de seguridad requiere incremento salarial al 15% o más
+        if (v.wage >= 15) {
+          safetyPenalty = -3;
+        } else {
+          safetyPenalty = CRISES.heat.modifiers.safetyPenalty;
+        }
+      }
+
+      // 2. Huella de Carbono (Movilidad y Generación)
+      // Vuelos fijos de Anuel, Ozuna, Mora, Myke Towers y sus equipos (145 tCO2e)
+      const artistFlightEmissions = 145.0; 
+      
+      // Ajuste de transporte público debido a huelga
+      let realPublicTrans = v.publictrans;
+      if (publicTransitReduction && v.shuttle < 75) {
+        realPublicTrans = 5; // Cae drásticamente a un 5% si no hay lanzaderas alternativas
+      }
+
+      // Distancia promedio de desplazamiento: 20 km (en ciudad) o 32 km (periurbana/periurbana, location > 30)
+      const avgDistance = 20 + (v.location / 100) * 12;
+      
+      // Coche privado: 0.143 kg CO2/km (con factor de ocupación medio de 2.2 personas en eventos = 0.065 kg CO2 por pasajero-km)
+      // Bus/Metro: 0.028 kg CO2 por pasajero-km
+      const emissionsFactor = (1 - (realPublicTrans / 100)) * 0.065 + (realPublicTrans / 100) * 0.028;
+      const publicEmissions = (v.attendance * avgDistance * emissionsFactor) / 1000; // tCO2e
+
+      // Consumo Energético
+      // El festival consume 15 litros de combustible por cada 100 asistentes de media.
+      const baseFuelLiters = (v.attendance / 100) * 15 * generatorEfficiencyDrop;
+      const dieselLiters = baseFuelLiters * (v.diesel / 100);
+      const hvoLiters = baseFuelLiters * (v.renew / 100);
+
+      // Emisión Diésel: 2.68 kg CO2/L. HVO reduce las emisiones netas un 90% (0.268 kg CO2/L)
+      const genEmissions = ((dieselLiters * 2.68) + (hvoLiters * 0.268)) / 1000; // tCO2e
+
+      const totalEmissions = artistFlightEmissions + publicEmissions + genEmissions;
+
+      let scoreCO2 = Math.round(100 - ((totalEmissions - 150) / 450) * 90);
+      scoreCO2 = scoreCO2 + scoreCO2Penalty;
+      scoreCO2 = Math.max(5, Math.min(100, scoreCO2));
+
+      // 3. Mix Energético
+      let scoreEnergy = Math.round(v.renew) + scoreEnergyPenalty;
+      scoreEnergy = Math.max(5, Math.min(100, scoreEnergy));
+
+      // 4. Residuos Plásticos (Kg)
+      // En un festival tradicional se consumen 3.5 vasos de plástico de 12g de un solo uso por asistente (0.042 kg)
+      // En un sistema circular con vasos reutilizables de PP se compran vasos robustos y se asume sólo un 12% de pérdidas (0.003 kg por asistente)
+      let plasticGenerated = 0;
+      let scorePlastic = 0;
+
+      if (v.plastic > 15) {
+        plasticGenerated = v.attendance * 3.5 * 0.012; // Kg de plástico de un solo uso
+        scorePlastic = Math.round(v.recycle * 0.65);
+      } else {
+        // Modelo circular PP (fianza de 1€)
+        plasticGenerated = v.attendance * 0.12 * 0.025; // Peso del vaso de PP (25g) por el 12% de extravío
+        scorePlastic = Math.round(90 + (v.recycle * 0.10));
+      }
+      scorePlastic = scorePlastic + scorePlasticPenalty;
+      scorePlastic = Math.max(5, Math.min(100, scorePlastic));
+
+      // 5. Decibelios en Recinto y Mitigación
+      let decibels = 105 - (v.location * 0.22);
+      let scoreAcustico = Math.round(v.location + 15) + scoreAcusticoPenalty;
+      scoreAcustico = Math.max(10, Math.min(100, scoreAcustico));
+
+      // 6. Salario de los Trabajadores
+      const baseSalary = 10.50; // €/hora convenio sectorial
+      const finalSalary = baseSalary * (1 + (v.wage / 100));
+      let scoreEmpleo = Math.round((v.localhire * 0.5) + (v.wage * 1.66));
+      scoreEmpleo = Math.max(10, Math.min(100, scoreEmpleo));
+
+      // 7. Margen y Beneficio Económico
+      // INGRESOS REALES:
+      const ticketRevenue = v.attendance * 85.00; // Precio de entrada medio ponderado
+      
+      // Venta en barra media: 30€. Si es periurbana o cierra antes, baja hasta un 35% de consumo en barras
+      const averageBarSpend = 30 * (1 - (v.location / 100) * 0.35);
+      const barRevenue = v.attendance * averageBarSpend;
+      
+      const sponsorsRevenue = v.attendance * 8.00; // Canon de marcas patrocinadoras y foodtrucks
+      
+      // Ingresos extraordinarios de fianza (12% de asistentes se quedan con el vaso de 1€ de recuerdo)
+      let cupDepositRevenue = 0;
+      if (v.plastic <= 15) {
+        cupDepositRevenue = v.attendance * 0.12 * 1.00;
+      }
+      
+      const totalRevenue = ticketRevenue + barRevenue + sponsorsRevenue + cupDepositRevenue;
+
+      // COSTES OPERATIVOS REALES:
+      const bookingCost = 1400000; // Caché combinado de Mora, Ozuna, Myke Towers y Anuel AA
+      
+      // Alquiler de escenarios, generadores y sonido. El mix ecológico/solar aumenta costes de instalación un 25%
+      let baseInfraCost = 250000;
+      if (v.renew > 40) {
+        baseInfraCost *= 1.25;
+      }
+
+      // Coste de Tasas SGAE en conciertos y festivales en España = 8.5% neto sobre taquilla
+      const sgaeCost = ticketRevenue * 0.085;
+      const permitsMarketing = 120000; // Fijo de permisos locales, seguros de responsabilidad civil y publicidad
+
+      // Coste Energético (Diésel 1.60€/L frente a biocombustible HVO ecológico a 2.20€/L)
+      const energyCost = ((dieselLiters * 1.60) + (hvoLiters * 2.20)) * fuelPriceMultiplier;
+
+      // Suministros barra y vajilla
+      let cupLogisticsCost = 0;
+      const beverageCOGS = barRevenue * 0.22; // Coste de adquisición de bebidas/stock de barra (22% del ingreso)
+      
+      if (v.plastic > 15) {
+        // Compra de 3.5 vasos desechables por persona a 0.05€ c/u + tasa de tratamiento de residuo 0.03€
+        cupLogisticsCost = v.attendance * 3.5 * 0.08;
+      } else {
+        // Modelo circular: Adquisición de stock (1.2 vasos/persona a 0.35€) + costes logísticos de lavado (0.15€/persona)
+        cupLogisticsCost = (v.attendance * 1.2 * 0.35) + (v.attendance * 0.15);
+      }
+      const totalBarSuppliesCost = beverageCOGS + cupLogisticsCost;
+
+      // Coste del Personal de Evento (1 trabajador por cada 50 asistentes, turno medio ponderado de 16h entre montaje y show)
+      const staffCount = v.attendance / 50;
+      const staffCost = staffCount * 16 * finalSalary * 1.33; // Multiplicador del 1.33 por cargas de la Seguridad Social española
+
+      // Logística de Movilidad
+      // Buses lanzadera charter (1 bus por cada 200 asistentes planificados a 800€/unidad)
+      const busesCount = (v.attendance / 200) * (v.shuttle / 100);
+      const shuttleCost = busesCount * 800;
+      
+      // Coste de la promoción: Descuento del 10% en barras al validar billete de transporte público
+      const transitDiscountExpenses = barRevenue * (v.publictrans / 100) * 0.10;
+
+      const totalCosts = bookingCost + baseInfraCost + sgaeCost + permitsMarketing + energyCost + totalBarSuppliesCost + staffCost + shuttleCost + transitDiscountExpenses + fineExpenses + heatwaveCost;
+
+      const netProfit = totalRevenue - totalCosts;
+
+      // Calcular Score Financiero del Margen comercial
+      let scoreMargen = Math.round((netProfit / (v.attendance * 45)) * 100);
+      scoreMargen = Math.max(10, Math.min(100, scoreMargen));
+
+      let scoreRetornoLocal = Math.round((v.localhire * 0.5) + (v.publictrans * 0.2) + 15);
+
+      // Score de Seguridad General
+      let baseSecurity = 72;
+      let safetyModifier = (realPublicTrans * 0.1) + (v.shuttle * 0.15) + safetyPenalty;
+      let finalSafetyScore = Math.max(15, Math.min(100, Math.round(baseSecurity + safetyModifier)));
+
+      return {
+        // Impactos Físicos Reales
+        totalEmissions, dieselLiters, plasticKg: plasticGenerated, decibels, finalSalary, totalNetROI: netProfit,
+        publicEmissions, genEmissions, ticketRevenue, barRevenue, sponsorsRevenue, baseInfraCost, sgaeCost, totalBarSuppliesCost, staffCost, shuttleCost, transitDiscountExpenses, fineExpenses, heatwaveCost,
+        // Scores
+        scoreCO2, scoreEnergy, scorePlastic, scoreAcustico, scoreEmpleo, scoreMargen, scoreRetornoLocal, finalSafetyScore
+      };
+    }
+
+    // ── FIJAR Y COMPARA ESCENARIOS ──
+    function captureReference() {
+      const v = getFormValues();
+      referenceScenario = calculateRealMetrics(v);
+      document.getElementById('btn-clear-ref').classList.remove('hidden');
+      updateAll();
+    }
+
+    function clearReference() {
+      referenceScenario = null;
+      document.getElementById('btn-clear-ref').classList.add('hidden');
+      document.getElementById('comparePanel').classList.add('hidden');
+      updateAll();
+    }
+
+    // ── RENDERIZADO DE LAS BARRAS DE PROGRESO DE NEÓN ──
+    function renderProgressRow(label, score, colorClass) {
+      return `
+        <div class="space-y-1">
+          <div class="flex justify-between text-xs">
+            <span class="text-gray-400 font-sans">${label}</span>
+            <span class="font-bold text-white">${score}/100</span>
+          </div>
+          <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all duration-500" style="width: ${score}%; background-color: ${colorClass};"></div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ── ENLACE ESTRATÉGICO CON LOS ODS (PDF TABLE) ──
+    function updateODSStatus(metrics) {
+      const odsGrid = document.getElementById('odsGrid');
+      
+      const targetODS = [
+        {
+          num: 7,
+          title: "Energía Sostenible",
+          desc: "Transición a biocombustibles HVO y solar.",
+          color: "#FAC775",
+          active: metrics.scoreEnergy >= 65,
+          reason: "Cumplido: Mix fósil por debajo del 40%."
+        },
+        {
+          num: 8,
+          title: "Trabajo Decente",
+          desc: "Bolsa de empleo local con salarios dignos.",
+          color: "#F0997B",
+          active: metrics.scoreEmpleo >= 65,
+          reason: "Cumplido: Salario local incrementado y alta tasa local."
+        },
+        {
+          num: 11,
+          title: "Ciudades Sostenibles",
+          desc: "Mitigación del impacto acústico y movilidad verde.",
+          color: "#5DCAA5",
+          active: metrics.scoreAcustico >= 65 && metrics.scoreCO2 >= 55,
+          reason: "Cumplido: Excelente mitigación acústica y movilidad optimizada."
+        },
+        {
+          num: 12,
+          title: "Consumo Responsable",
+          desc: "Erradicación de plásticos y fianza circular.",
+          color: "#85B7EB",
+          active: metrics.scorePlastic >= 70,
+          reason: "Cumplido: Vasos plásticos desechables eliminados de las barras."
+        }
+      ];
+
+      odsGrid.innerHTML = targetODS.map(ods => `
+        <div class="p-4 rounded-2xl bg-cybercard border transition-all ${ods.active ? 'border-neonGreen/40 bg-emerald-950/10' : 'border-cyberborder opacity-40'}">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center font-black text-cyberbg text-sm" style="background-color: ${ods.color}">
+              ${ods.num}
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-white font-sans">ODS ${ods.num}</h4>
+              <p class="text-[10px] text-gray-400 font-sans">${ods.title}</p>
+            </div>
+          </div>
+          <p class="text-[11px] text-gray-300 mt-2 font-light leading-snug font-sans">${ods.desc}</p>
+          ${ods.active 
+            ? `<span class="text-[10px] text-neonGreen font-bold block mt-2 font-sans">✓ ${ods.reason}</span>` 
+            : `<span class="text-[10px] text-gray-500 font-bold block mt-2 font-sans">✗ No cumplido</span>`
+          }
+        </div>
+      `).join('');
+    }
+
+    // ── ACTUALIZACIÓN GENERAL DEL PANEL Y SCRIPT DE NEGOCIO ──
+    function updateAll() {
+      const v = getFormValues();
+      
+      // Mostrar asistencia activa
+      document.getElementById('val-attendance-display').textContent = v.attendance.toLocaleString('es-ES');
+
+      // Sincronizar etiquetas de palancas en tiempo real
+      document.getElementById('lbl-diesel').textContent = v.diesel + '%';
+      document.getElementById('lbl-renew').textContent = v.renew + '%';
+      document.getElementById('lbl-plastic').textContent = v.plastic + '%';
+      document.getElementById('lbl-recycle').textContent = v.recycle + '%';
+      document.getElementById('lbl-publictrans').textContent = v.publictrans + '%';
+      document.getElementById('lbl-shuttle').textContent = v.shuttle + '%';
+      document.getElementById('lbl-localhire').textContent = v.localhire + '%';
+      document.getElementById('lbl-wage').textContent = '+' + v.wage + '%';
+      document.getElementById('lbl-location').textContent = v.location + '%';
+
+      // Calcular métricas físicas y scores
+      const m = calculateRealMetrics(v);
+
+      // Renderizar valores reales (KPIs superiores)
+      document.getElementById('val-co2').textContent = Math.round(m.totalEmissions).toLocaleString('es-ES');
+      const evalCO2 = document.getElementById('eval-co2');
+      if (m.scoreCO2 >= 70) {
+        evalCO2.className = "text-[10px] text-emerald-400 mt-1 flex items-center gap-1 font-sans";
+        evalCO2.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Bajo Impacto';
+      } else if (m.scoreCO2 >= 45) {
+        evalCO2.className = "text-[10px] text-amber-400 mt-1 flex items-center gap-1 font-sans";
+        evalCO2.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Moderado';
+      } else {
+        evalCO2.className = "text-[10px] text-red-400 mt-1 flex items-center gap-1 font-sans";
+        evalCO2.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Crítico';
+      }
+
+      document.getElementById('val-diesel-liters').textContent = Math.round(m.dieselLiters).toLocaleString('es-ES');
+      const evalDiesel = document.getElementById('eval-diesel');
+      if (m.scoreEnergy >= 70) {
+        evalDiesel.className = "text-[10px] text-emerald-400 mt-1 flex items-center gap-1 font-sans";
+        evalDiesel.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Sostenible';
+      } else if (m.scoreEnergy >= 40) {
+        evalDiesel.className = "text-[10px] text-amber-400 mt-1 flex items-center gap-1 font-sans";
+        evalDiesel.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Consumo Medio';
+      } else {
+        evalDiesel.className = "text-[10px] text-red-400 mt-1 flex items-center gap-1 font-sans";
+        evalDiesel.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Fósil Crítico';
+      }
+
+      document.getElementById('val-plastic-kg').textContent = Math.round(m.plasticKg).toLocaleString('es-ES');
+      const evalPlastic = document.getElementById('eval-plastic');
+      if (m.scorePlastic >= 70) {
+        evalPlastic.className = "text-[10px] text-emerald-400 mt-1 flex items-center gap-1 font-sans";
+        evalPlastic.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Residuo Mínimo';
+      } else if (m.scorePlastic >= 40) {
+        evalPlastic.className = "text-[10px] text-amber-400 mt-1 flex items-center gap-1 font-sans";
+        evalPlastic.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Generación Media';
+      } else {
+        evalPlastic.className = "text-[10px] text-red-400 mt-1 flex items-center gap-1 font-sans";
+        evalPlastic.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Crítico Acumulado';
+      }
+
+      document.getElementById('val-decibels').textContent = Math.round(m.decibels);
+      const evalDecibels = document.getElementById('eval-decibels');
+      if (v.location >= 50) {
+        evalDecibels.className = "text-[10px] text-emerald-400 mt-1 flex items-center gap-1 font-sans";
+        evalDecibels.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Impacto Seguro';
+      } else if (v.location >= 20) {
+        evalDecibels.className = "text-[10px] text-amber-400 mt-1 flex items-center gap-1 font-sans";
+        evalDecibels.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Límite Crítico';
+      } else {
+        evalDecibels.className = "text-[10px] text-red-400 mt-1 flex items-center gap-1 font-sans";
+        evalDecibels.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Ruido Excesivo';
+      }
+
+      document.getElementById('val-salary').textContent = m.finalSalary.toFixed(2);
+      const evalSalary = document.getElementById('eval-salary');
+      if (v.wage >= 15) {
+        evalSalary.className = "text-[10px] text-emerald-400 mt-1 flex items-center gap-1 font-sans";
+        evalSalary.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Salario Digno Pro';
+      } else {
+        evalSalary.className = "text-[10px] text-amber-400 mt-1 flex items-center gap-1 font-sans";
+        evalSalary.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Convenio Base';
+      }
+
+      document.getElementById('val-roi').textContent = Math.round(m.totalNetROI).toLocaleString('es-ES') + ' €';
+      const evalRoi = document.getElementById('eval-roi');
+      if (m.scoreMargen >= 70) {
+        evalRoi.className = "text-[10px] text-emerald-400 mt-1 flex items-center gap-1 font-sans";
+        evalRoi.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> ROI Excelente';
+      } else if (m.scoreMargen >= 45) {
+        evalRoi.className = "text-[10px] text-amber-400 mt-1 flex items-center gap-1 font-sans";
+        evalRoi.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Ajustado / Viable';
+      } else {
+        evalRoi.className = "text-[10px] text-red-400 mt-1 flex items-center gap-1 font-sans";
+        evalRoi.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Margen Crítico';
+      }
+
+      // Renderizar Dimensiones (0-100)
+      document.getElementById('env-bars').innerHTML = `
+        ${renderProgressRow("Huella Carbono", m.scoreCO2, "#10b981")}
+        ${renderProgressRow("Mix Energía Limpia", m.scoreEnergy, "#10b981")}
+        ${renderProgressRow("Menaje Circular", m.scorePlastic, "#10b981")}
+      `;
+
+      document.getElementById('social-bars').innerHTML = `
+        ${renderProgressRow("Mitigación Acústica", m.scoreAcustico, "#06b6d4")}
+        ${renderProgressRow("Calidad Empleo", m.scoreEmpleo, "#06b6d4")}
+        ${renderProgressRow("Seguridad Asistentes", m.finalSafetyScore, "#06b6d4")}
+      `;
+
+      document.getElementById('eco-bars').innerHTML = `
+        ${renderProgressRow("Margen Comercial", m.scoreMargen, "#f97316")}
+        ${renderProgressRow("Retorno Local", m.scoreRetornoLocal, "#f97316")}
+      `;
+
+      // Renderizar Desglose Auditado del Evento
+      document.getElementById('det-ticket-inc').textContent = Math.round(m.ticketRevenue).toLocaleString('es-ES') + ' €';
+      document.getElementById('det-bar-inc').textContent = Math.round(m.barRevenue).toLocaleString('es-ES') + ' €';
+      document.getElementById('det-spons-inc').textContent = Math.round(m.sponsorsRevenue).toLocaleString('es-ES') + ' €';
+      document.getElementById('det-infra-cost').textContent = '- ' + Math.round(m.baseInfraCost).toLocaleString('es-ES') + ' €';
+      document.getElementById('det-sgae-cost').textContent = '- ' + Math.round(m.sgaeCost).toLocaleString('es-ES') + ' €';
+      document.getElementById('det-bar-cost').textContent = '- ' + Math.round(m.totalBarSuppliesCost).toLocaleString('es-ES') + ' €';
+      document.getElementById('det-staff-cost').textContent = '- ' + Math.round(m.staffCost).toLocaleString('es-ES') + ' €';
+      
+      const totalShuttlePromoCost = m.shuttleCost + m.transitDiscountExpenses;
+      document.getElementById('det-shuttle-cost').textContent = '- ' + Math.round(totalShuttlePromoCost).toLocaleString('es-ES') + ' €';
+
+      // Control del Row de Sanciones Administrativas
+      const rowFines = document.getElementById('row-fines');
+      if (m.fineExpenses > 0 || m.heatwaveCost > 0) {
+        rowFines.classList.remove('hidden');
+        rowFines.classList.add('flex');
+        const extraExpenses = m.fineExpenses + m.heatwaveCost;
+        document.getElementById('det-fines-cost').textContent = '- ' + extraExpenses.toLocaleString('es-ES') + ' €';
+      } else {
+        rowFines.classList.add('hidden');
+        rowFines.classList.remove('flex');
+      }
+
+      document.getElementById('det-public-co2').textContent = m.publicEmissions.toFixed(1) + ' tCO₂e';
+      document.getElementById('det-gen-co2').textContent = m.genEmissions.toFixed(1) + ' tCO₂e';
+
+      // Plásticos y circularidad
+      let curPlastic = m.plasticKg;
+      let recycledPl = curPlastic * (v.recycle / 100);
+      let landfillPl = curPlastic - recycledPl;
+
+      document.getElementById('det-plastic-total').textContent = Math.round(curPlastic).toLocaleString('es-ES') + ' Kg';
+      document.getElementById('det-plastic-recycled').textContent = Math.round(recycledPl).toLocaleString('es-ES') + ' Kg';
+      document.getElementById('det-plastic-landfill').textContent = Math.round(landfillPl).toLocaleString('es-ES') + ' Kg';
+
+      // Actualizar ODS
+      updateODSStatus(m);
+
+      // Si existe un escenario de referencia, calcular diferencias
+      const compPanel = document.getElementById('comparePanel');
+      if (referenceScenario) {
+        compPanel.classList.remove('hidden');
+        renderComparison(m);
+      } else {
+        compPanel.classList.add('hidden');
+      }
+    }
+
+    // ── GESTIÓN DE LA TABLA COMPARATIVA DE ESCENARIOS ──
+    function renderComparison(current) {
+      const tbody = document.getElementById('compareTableBody');
+      const indicators = [
+        { key: 'scoreCO2', label: 'Ambiental: Huella Carbono' },
+        { key: 'scoreEnergy', label: 'Ambiental: Energía Limpia' },
+        { key: 'scorePlastic', label: 'Ambiental: Menaje Circular' },
+        { key: 'scoreAcustico', label: 'Social: Mitigación Ruido' },
+        { key: 'scoreEmpleo', label: 'Social: Empleo Ético' },
+        { key: 'finalSafetyScore', label: 'Social: Seguridad' },
+        { key: 'scoreMargen', label: 'Económica: Margen de Beneficio' },
+        { key: 'scoreRetornoLocal', label: 'Económica: Retorno en Territorio' },
+      ];
+
+      tbody.innerHTML = indicators.map(ind => {
+        const refVal = referenceScenario[ind.key];
+        const curVal = current[ind.key];
+        const diff = curVal - refVal;
+        let diffText = "";
+        let diffClass = "";
+
+        if (diff > 0) {
+          diffText = `+${diff}`;
+          diffClass = "text-neonGreen";
+        } else if (diff < 0) {
+          diffText = `${diff}`;
+          diffClass = "text-neonRed";
+        } else {
+          diffText = "0";
+          diffClass = "text-gray-400";
+        }
+
+        return `
+          <tr class="border-b border-cyberborder/40 py-1.5">
+            <td class="py-2 text-gray-300 font-sans">${ind.label}</td>
+            <td class="text-right text-gray-400">${refVal}/100</td>
+            <td class="text-right font-bold text-white">${curVal}/100</td>
+            <td class="text-right font-bold ${diffClass}">${diffText}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ── INICIALIZACIÓN POR DEFECTO ──
+    window.onload = function() {
+      // Cargar escenario base por defecto para tener datos iniciales consistentes
+      loadScenario('base', document.getElementById('btn-sc-base'));
+    }
+  </script>
+</body>
+</html>
